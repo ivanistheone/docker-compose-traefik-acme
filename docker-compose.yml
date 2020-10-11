@@ -6,15 +6,19 @@ services:
     image: "traefik:v2.3"
     container_name: "traefik"
     command:
+      - "--entrypoints.websecure.address=:443"
+      # Uncomment next two lines for debugging
       - "--log.level=DEBUG"
       - "--api.insecure=true"
+      # Receive docker events and automatically route to them based on labels
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
-      - "--entrypoints.websecure.address=:443"
+      # Let's Encrypt
       - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
       # - "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
       - "--certificatesresolvers.myresolver.acme.email=ivan.savov@gmail.com"
       - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+      # Redirect http --> https
       - "--entrypoints.web.address=:80"
       - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
       - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
@@ -32,6 +36,6 @@ services:
     container_name: "whoami_service"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.whoami.rule=Host(`nobsstats.com`)"
+      - "traefik.http.routers.whoami.rule=Host(`nobsstats.com`, `www.nobsstats.com`)"
       - "traefik.http.routers.whoami.entrypoints=websecure"
       - "traefik.http.routers.whoami.tls.certresolver=myresolver"
