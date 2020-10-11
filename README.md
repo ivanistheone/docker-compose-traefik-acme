@@ -25,3 +25,16 @@ Install docker on remote host
     fab install_docker
 
 
+
+Docker compose
+--------------
+Following the steps in the [traefik docs](https://doc.traefik.io/traefik/https/acme/)
+we copy the file `docker-compose.yml` and applied the modifications to the test
+domain we want to use, then simply run:
+
+    fab dcup
+
+
+You can "tail" the logs using the command `fab dclogs:"-f"`.
+
+Everything seems to be running fine. We've got certs, we've got routing. Yeey!
